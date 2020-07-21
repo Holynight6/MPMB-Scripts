@@ -1,7 +1,7 @@
 var iFileName = "MOoT_20200721_Bard-and-Paladin.js";
 RequiredSheetVersion(13);
 // This file adds the content from the Mythic Odysseys of Theros: Bard and Paladin subclasses to MPMB's Character Record Sheet
-
+// Thanks to u/newbuu2 for doing a better job of the paladin aura
 // Define the source
 SourceList["MOoT"] = {
 	name : "Mythic Odysseys of Theros: Bard and Paladin",
@@ -95,15 +95,22 @@ AddSubClass("paladin", "oath of heroism", {
 			minlevel : 3,
 			description : "\n   I distribute 2d8 + my Paladin level in temp hit points among those in 30 feet"
 		},
-		"subclassfeature7" : {
-			name : "Aura of Alacrity",
-			source : ["MOoT", 2],
-			minlevel : 7,
-			description : desc([
-				"Allies who start their turn in my aura gain 10 feet walking speed for their turn"
-			]),
-			speed : { allModes : "+10" }
-		},
+        "subclassfeature7" : {
+            name : "Aura of Alacrity",
+            source : ["MOT", 0],
+            minlevel : 7,
+            description : desc([
+                "If I'm not incapacitated, allies starting within range get extra movement for their turn"
+            ]),
+            changeeval : function (v) {
+                var alacritySpd = '+' + (v[1] < 7 ? 0 : 10);
+                SetProf('speed', alacritySpd !== '+0', {allModes : alacritySpd}, "Oath of Glory: Aura of Alacrity");
+            },
+            additional : levels.map(function (n) {
+                if (n < 7) return "";
+                return (n < 18 ? 5 : 10) + "-foot aura; +10ft movement";
+            })
+        },
 		"subclassfeature15" : {
 			name : "Glorious Defense",
 			source : ["MOoT", 2],
